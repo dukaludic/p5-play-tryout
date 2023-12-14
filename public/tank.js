@@ -1,59 +1,61 @@
 function Tank(x, y) {
   this.x = x
   this.y = y
-  this.currentDirection = {
-    x: 1,
-    y: 1,
-  }
+  this.currentDirection = -90
   this.projectileSpeed = 1
 
   this.show = function () {
-    fill(255)
-    rect(this.x, this.y, 50, 50)
+    // push()
 
-    // Gun
-    rect(this.x, this.y, 20, 100, 2)
+    // fill(255)
+    // translate(this.x, this.y)
+    // rotate(50)
+    // rect(this.x, this.y, 50, 50)
+
+    // // Gun
+    // // translate(this.x, this.y)
+    // // rotate(50)
+    // rect(this.x + 17.5, this.y + 17.5, 10, 50)
+
+    // pop()
+
+    // rect(this.x, this.y, 50, 50)
+
+    push()
+    translate(this.x, this.y)
+    rotate(this.currentDirection)
+
+    // Tank body
+    rectMode(CENTER)
+    fill(100)
+    rect(0, 0, 30, 20)
+
+    // Tank turret
+    fill(150)
+    rect(15, 0, 10, 5)
+
+    pop()
   }
-
-  // this.shoot = function () {
-  //   // console.log('shot fired')
-  //   // let x, y
-  //   // x = this.x + this.projectileSpeed
-  //   // y = this.y + this.projectileSpeed
-  //   // rect(x, y, 10, 10)
-  //   // fill(255)
-  // }
 
   this.move = function () {
     if (keyIsDown(LEFT_ARROW)) {
       this.x -= 5
-      this.currentDirection.x = -1
-      this.currentDirection.y = 0
-    }
-
-    if (keyIsDown(RIGHT_ARROW)) {
+      this.currentDirection = 180
+    } else if (keyIsDown(RIGHT_ARROW)) {
       this.x += 5
-      this.currentDirection.x = 1
-      this.currentDirection.y = 0
-    }
-
-    if (keyIsDown(UP_ARROW)) {
+      this.currentDirection = 0
+    } else if (keyIsDown(UP_ARROW)) {
       this.y -= 5
-      this.currentDirection.y = -1
-      this.currentDirection.x = 0
-    }
-
-    if (keyIsDown(DOWN_ARROW)) {
+      this.currentDirection = -90
+    } else if (keyIsDown(DOWN_ARROW)) {
       this.y += 5
-      this.currentDirection.y = 1
-      this.currentDirection.x = 0
+      this.currentDirection = 90
     }
-
-    console.log(this.currentDirection)
 
     return {
       x: this.x,
       y: this.y,
+      direction: this.currentDirection,
     }
   }
 }

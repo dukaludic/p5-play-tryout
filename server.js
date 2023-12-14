@@ -12,17 +12,14 @@ const io = socket(server)
 io.sockets.on('connection', newConnection)
 
 function newConnection(socket) {
-  console.log(socket)
-
-  socket.on('mouse', mouseMsg)
   socket.on('tank_moved', tankMoved)
+  socket.on('projectile_fired', projectileFired)
 
   function tankMoved(data) {
     socket.broadcast.emit('tank_moved', data)
   }
 
-  function mouseMsg(data) {
-    socket.broadcast.emit('mouse', data)
-    console.log(data)
+  function projectileFired(data) {
+    socket.broadcast.emit('projectile_fired', data)
   }
 }
