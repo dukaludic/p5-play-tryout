@@ -1,20 +1,21 @@
-/**
- * @type {import('p5')}
- */
-
 let socket
 let projectile
+
+const CANVAS_DIMENSIONS = {
+  width: 600,
+  height: 400,
+}
 
 function setup() {
   socket = io.connect('http://localhost:3000')
   socket.on('tank_moved', opponentTankMoved)
   socket.on('projectile_shot', projectileShot)
 
-  createCanvas(600, 400)
+  createCanvas(CANVAS_DIMENSIONS.width, CANVAS_DIMENSIONS.height)
   background(51)
 
-  tank = new Tank(10, 10)
-  tank2 = new Tank(50, 50)
+  tank = new Tank(100, 100)
+  tank2 = new Tank(300, 300)
 
   angleMode(DEGREES)
 }
@@ -48,6 +49,18 @@ function draw() {
   if (projectile) {
     projectile.show()
   }
+
+  // if (tank.collidesWith(tank2)) {
+  //   console.log('COLLISION!')
+  // }
+
+  tank.collidesWith(tank2)
+  tank2.collidesWith(tank)
+  // tank.collidesWithEdgeOfCanvas()
+
+  // if (tank.collidesWithEdgeOfCanvas().left) {
+  //   console.log('COLLISION!')
+  // }
 }
 
 function keyPressed() {
