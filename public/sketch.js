@@ -6,28 +6,40 @@ const CANVAS_DIMENSIONS = {
   height: 400,
 }
 
+const players = {}
+
+let id
+
 function setup() {
-  socket = io.connect('http://localhost:3000')
-  socket.on('tank_moved', opponentTankMoved)
-  socket.on('projectile_shot', projectileShot)
-
-  createCanvas(CANVAS_DIMENSIONS.width, CANVAS_DIMENSIONS.height)
-  background(51)
-
-  tank = new Tank(100, 100)
-  tank2 = new Tank(300, 300)
-
   angleMode(DEGREES)
+  background(51)
+  createCanvas(CANVAS_DIMENSIONS.width, CANVAS_DIMENSIONS.height)
+
+  socket = io.connect('http://localhost:3000')
+  socket.on('tank_moved', tankMoving)
+
+  socket.on('player_entered', (data) => {
+    console.log('Player entered:', data)
+    id = data.id
+
+    players[0] = new Tank(data.gameState[0].x, data.gameState[0].y)
+    if (data.players[1]) {
+      // players[1] = new Tank(data.players[1].x, data.players[1].y)
+    }
+  })
 }
 
-function projectileShot(data) {
-  console.log('projectile')
-}
-
-function opponentTankMoved(data) {
-  tank2.x = data.x
-  tank2.y = data.y
-  tank2.currentDirection = data.direction
+function tankMoving(data) {
+  console.log(data, 'game state')
+  // // console.log(players)
+  // console.log({ id })
+  // const playerIndex = data.id
+  // players[1].x = data[1].x
+  // players[1].y = data[1].y
+  // players[1].currentDirection = data[1].direction
+  // players[0].x = data[0].x
+  // players[0].y = data[0].y
+  // players[0].currentDirection = data[0].direction
 }
 
 function draw() {
@@ -38,34 +50,27 @@ function draw() {
     keyIsDown(UP_ARROW) ||
     keyIsDown(DOWN_ARROW)
   ) {
-    const coordinates = tank.move()
-    socket.emit('tank_moved', coordinates)
+    for (const key in players) {
+      const player = players[key]
+      const coordinates = player.move()
+      // socket.emit('tank_moved', { id, coordinates })
+    }
   }
 
-  tank.show()
-  tank2.show()
-  // rect(tank.x, tank.y, 50, 50)
-  // rect(tank2.x, tank2.y, 50, 50)
-  if (projectile) {
-    projectile.show()
+  // if (players[0]) {
+  //   players[1].show()
+  //   players[0].show()
+  // }
+
+  for (const key in players) {
+    // console.log(players, 'plyaers')
+    const player = players[key]
+    player.show()
   }
-
-  // if (tank.collidesWith(tank2)) {
-  //   console.log('COLLISION!')
-  // }
-
-  tank.collidesWith(tank2)
-  tank2.collidesWith(tank)
-  // tank.collidesWithEdgeOfCanvas()
-
-  // if (tank.collidesWithEdgeOfCanvas().left) {
-  //   console.log('COLLISION!')
-  // }
 }
 
 function keyPressed() {
-  if (keyCode === 32) {
-    projectile = new Projectile(tank.x, tank.y, tank.currentDirection)
-    socket.emit('projectile_fired', projectile)
+  if ((keyCode = 32)) {
+    console.log(players)
   }
 }
