@@ -31,32 +31,14 @@ class Tank extends Collidable {
 
   move = () => {
     if (keyIsDown(LEFT_ARROW) && this.possibleMovingDirections.left) {
-      this.x -= 3
-      this.currentDirection = 180
+      socket.emit('keyDown', 'leftArrow')
     } else if (keyIsDown(RIGHT_ARROW) && this.possibleMovingDirections.right) {
-      // this.x += 3
-      socket.emit('tank_moved', {
-        id,
-        coordinates: {
-          x: (this.x += 3),
-          y: this.y,
-          direction: this.currentDirection,
-        },
-      })
-
-      this.currentDirection = 0
+      socket.emit('keyDown', 'rightArrow')
     } else if (keyIsDown(UP_ARROW) && this.possibleMovingDirections.up) {
-      this.y -= 3
-      this.currentDirection = -90
+      console.log(this.possibleMovingDirections)
+      socket.emit('keyDown', 'upArrow')
     } else if (keyIsDown(DOWN_ARROW) && this.possibleMovingDirections.down) {
-      this.y += 3
-      this.currentDirection = 90
-    }
-
-    return {
-      x: this.x,
-      y: this.y,
-      direction: this.currentDirection,
+      socket.emit('keyDown', 'downArrow')
     }
   }
 }

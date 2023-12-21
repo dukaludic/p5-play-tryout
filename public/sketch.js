@@ -16,30 +16,27 @@ function setup() {
   createCanvas(CANVAS_DIMENSIONS.width, CANVAS_DIMENSIONS.height)
 
   socket = io.connect('http://localhost:3000')
-  socket.on('tank_moved', tankMoving)
+  socket.on('updatePlayers', (backendPlayers) => {
+    for (const id in backendPlayers) {
+      const backendPlayer = backendPlayers[id]
 
-  socket.on('player_entered', (data) => {
-    console.log('Player entered:', data)
-    id = data.id
-
-    players[0] = new Tank(data.gameState[0].x, data.gameState[0].y)
-    if (data.players[1]) {
-      // players[1] = new Tank(data.players[1].x, data.players[1].y)
+      if (!players[id]) {
+        players[id] = new Tank(backendPlayer.x, backendPlayer.y)
+      } else {
+        players[id].x = backendPlayer.x
+        players[id].y = backendPlayer.y
+        players[id].currentDirection = backendPlayer.currentDirection
+      }
     }
-  })
-}
 
-function tankMoving(data) {
-  console.log(data, 'game state')
-  // // console.log(players)
-  // console.log({ id })
-  // const playerIndex = data.id
-  // players[1].x = data[1].x
-  // players[1].y = data[1].y
-  // players[1].currentDirection = data[1].direction
-  // players[0].x = data[0].x
-  // players[0].y = data[0].y
-  // players[0].currentDirection = data[0].direction
+    for (const id in players) {
+      if (!backendPlayers[id]) {
+        delete players[id]
+      }
+    }
+
+    // console.log(players)
+  })
 }
 
 function draw() {
@@ -50,20 +47,23 @@ function draw() {
     keyIsDown(UP_ARROW) ||
     keyIsDown(DOWN_ARROW)
   ) {
-    for (const key in players) {
-      const player = players[key]
-      const coordinates = player.move()
-      // socket.emit('tank_moved', { id, coordinates })
-    }
+    players[socket.id].move()
+    // console.log(players, 'players')
   }
 
-  // if (players[0]) {
-  //   players[1].show()
-  //   players[0].show()
-  // }
+  // console.log(players[0], players[1], 'PLAYYERS')
+
+  if (players[Object.keys(players)[0]] && players[Object.keys(players)[1]]) {
+    players[Object.keys(players)[0]].collidesWith(
+      players[Object.keys(players)[1]],
+    )
+    // player[0].collidesWithEdgeOfCanvas()
+    players[Object.keys(players)[1]].collidesWith(
+      players[Object.keys(players)[0]],
+    )
+  }
 
   for (const key in players) {
-    // console.log(players, 'plyaers')
     const player = players[key]
     player.show()
   }
