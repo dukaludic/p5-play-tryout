@@ -6,6 +6,42 @@ class Tank extends Collidable {
     super(x, y, w, h)
 
     this.currentDirection = -90
+
+    this.keyPressed = {
+      upArrow: {
+        pressed: false,
+      },
+      downArrow: {
+        pressed: false,
+      },
+      rightArrow: {
+        pressed: false,
+      },
+      leftArrow: {
+        pressed: false,
+      },
+    }
+
+    setInterval(() => {
+      // console.log(this.keyPressed.upArrow.pressed)
+      if (this.keyPressed.leftArrow.pressed) {
+        players[socket.id].x -= 3
+        players[socket.id].currentDirection = 180
+        socket.emit('keyDown', 'leftArrow')
+      } else if (this.keyPressed.rightArrow.pressed) {
+        players[socket.id].x += 3
+        players[socket.id].currentDirection = 0
+        socket.emit('keyDown', 'rightArrow')
+      } else if (this.keyPressed.upArrow.pressed) {
+        players[socket.id].y -= 3
+        players[socket.id].currentDirection = -90
+        socket.emit('keyDown', 'upArrow')
+      } else if (this.keyPressed.downArrow.pressed) {
+        players[socket.id].y += 3
+        players[socket.id].currentDirection = 90
+        socket.emit('keyDown', 'downArrow')
+      }
+    }, 15)
   }
 
   show = () => {
@@ -31,14 +67,13 @@ class Tank extends Collidable {
 
   move = () => {
     if (keyIsDown(LEFT_ARROW) && this.possibleMovingDirections.left) {
-      socket.emit('keyDown', 'leftArrow')
+      this.keyPressed.leftArrow.pressed = true
     } else if (keyIsDown(RIGHT_ARROW) && this.possibleMovingDirections.right) {
-      socket.emit('keyDown', 'rightArrow')
+      this.keyPressed.rightArrow.pressed = true
     } else if (keyIsDown(UP_ARROW) && this.possibleMovingDirections.up) {
-      console.log(this.possibleMovingDirections)
-      socket.emit('keyDown', 'upArrow')
+      this.keyPressed.upArrow.pressed = true
     } else if (keyIsDown(DOWN_ARROW) && this.possibleMovingDirections.down) {
-      socket.emit('keyDown', 'downArrow')
+      this.keyPressed.downArrow.pressed = true
     }
   }
 }

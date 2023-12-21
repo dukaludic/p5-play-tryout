@@ -51,13 +51,14 @@ function draw() {
     // console.log(players, 'players')
   }
 
-  // console.log(players[0], players[1], 'PLAYYERS')
+  // players[Object.keys(players)[0]]?.collidesWithEdgeOfCanvas()
+  // console.log(players[Object.keys(players)[0]]?.possibleMovingDirections)
 
   if (players[Object.keys(players)[0]] && players[Object.keys(players)[1]]) {
     players[Object.keys(players)[0]].collidesWith(
       players[Object.keys(players)[1]],
     )
-    // player[0].collidesWithEdgeOfCanvas()
+
     players[Object.keys(players)[1]].collidesWith(
       players[Object.keys(players)[0]],
     )
@@ -72,5 +73,16 @@ function draw() {
 function keyPressed() {
   if ((keyCode = 32)) {
     console.log(players)
+  }
+}
+
+function keyReleased(key) {
+  for (const key in players) {
+    const player = players[key]
+    console.log(player, 'player')
+    player.keyPressed.leftArrow.pressed = key.code === 'ArrowLeft'
+    player.keyPressed.rightArrow.pressed = key.code === 'ArrowRight'
+    player.keyPressed.upArrow.pressed = key.code === 'ArrowUp'
+    player.keyPressed.downArrow.pressed = key.code === 'ArrowDown'
   }
 }

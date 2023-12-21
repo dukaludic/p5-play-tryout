@@ -37,11 +37,9 @@ io.on('connection', (socket) => {
       players[socket.id].x += 3
       players[socket.id].currentDirection = 0
     } else if (key === 'upArrow') {
-      console.log(key)
       players[socket.id].y -= 3
       players[socket.id].currentDirection = -90
     } else if (key === 'downArrow') {
-      console.log(key)
       players[socket.id].y += 3
       players[socket.id].currentDirection = 90
     }
