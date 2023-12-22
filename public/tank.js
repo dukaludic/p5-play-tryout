@@ -22,25 +22,65 @@ class Tank extends Collidable {
       },
     }
 
+    this.playerInputs = []
+    this.sequenceNumber = 0
+    this.speed = 3
+
     setInterval(() => {
-      // console.log(this.keyPressed.upArrow.pressed)
       if (this.keyPressed.leftArrow.pressed) {
-        players[socket.id].x -= 3
+        this.sequenceNumber++
+        this.playerInputs.push({
+          sequenceNumber: this.sequenceNumber,
+          dx: -this.speed,
+          dy: 0,
+        })
+        players[socket.id].x -= this.speed
         players[socket.id].currentDirection = 180
-        socket.emit('keyDown', 'leftArrow')
+        socket.emit('keyDown', {
+          keyCode: 'leftArrow',
+          sequenceNumber: this.sequenceNumber,
+        })
       } else if (this.keyPressed.rightArrow.pressed) {
-        players[socket.id].x += 3
+        this.sequenceNumber++
+        this.playerInputs.push({
+          sequenceNumber: this.sequenceNumber,
+          dx: this.speed,
+          dy: 0,
+        })
+        players[socket.id].x += this.speed
         players[socket.id].currentDirection = 0
-        socket.emit('keyDown', 'rightArrow')
+        socket.emit('keyDown', {
+          keyCode: 'rightArrow',
+          sequenceNumber: this.sequenceNumber,
+        })
       } else if (this.keyPressed.upArrow.pressed) {
-        players[socket.id].y -= 3
+        this.sequenceNumber++
+        this.playerInputs.push({
+          sequenceNumber: this.sequenceNumber,
+          dx: 0,
+          dy: -this.speed,
+        })
+        players[socket.id].y -= this.speed
         players[socket.id].currentDirection = -90
-        socket.emit('keyDown', 'upArrow')
+        socket.emit('keyDown', {
+          keyCode: 'upArrow',
+          sequenceNumber: this.sequenceNumber,
+        })
       } else if (this.keyPressed.downArrow.pressed) {
-        players[socket.id].y += 3
+        this.sequenceNumber++
+        this.playerInputs.push({
+          sequenceNumber: this.sequenceNumber,
+          dx: 0,
+          dy: this.speed,
+        })
+        players[socket.id].y += this.speed
         players[socket.id].currentDirection = 90
-        socket.emit('keyDown', 'downArrow')
+        socket.emit('keyDown', {
+          keyCode: 'downArrow',
+          sequenceNumber: this.sequenceNumber,
+        })
       }
+      // console.log(this.keyPressed)
     }, 15)
   }
 

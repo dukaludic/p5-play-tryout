@@ -23,9 +23,31 @@ function setup() {
       if (!players[id]) {
         players[id] = new Tank(backendPlayer.x, backendPlayer.y)
       } else {
-        players[id].x = backendPlayer.x
-        players[id].y = backendPlayer.y
-        players[id].currentDirection = backendPlayer.currentDirection
+        // Only for this player
+        if (id === socket.id) {
+          players[id].x = backendPlayer.x
+          players[id].y = backendPlayer.y
+          players[id].currentDirection = backendPlayer.currentDirection
+
+          const lastBackendInputIndex = players[id].playerInputs.findIndex(
+            (input) => {
+              return backendPlayer.sequenceNumber === input.sequenceNumber
+            },
+          )
+
+          if (lastBackendInputIndex > -1) {
+            players[id].playerInputs.splice(0, lastBackendInputIndex + 1)
+          }
+
+          players[id].playerInputs.forEach((input) => {
+            players[id].x += input.dx
+            players[id].x += input.dy
+          })
+          // else is for other players. Straight from backend
+        } else {
+          players[id].x = backendPlayer.x
+          players[id].y = backendPlayer.y
+        }
       }
     }
 
@@ -79,7 +101,6 @@ function keyPressed() {
 function keyReleased(key) {
   for (const key in players) {
     const player = players[key]
-    console.log(player, 'player')
     player.keyPressed.leftArrow.pressed = key.code === 'ArrowLeft'
     player.keyPressed.rightArrow.pressed = key.code === 'ArrowRight'
     player.keyPressed.upArrow.pressed = key.code === 'ArrowUp'

@@ -21,6 +21,7 @@ io.on('connection', (socket) => {
   players[socket.id] = {
     x: 500 * Math.random(),
     y: 500 * Math.random(),
+    sequenceNumber: 0,
   }
   io.emit('updatePlayers', players)
 
@@ -29,17 +30,18 @@ io.on('connection', (socket) => {
     io.emit('updatePlayers', players)
   })
 
-  socket.on('keyDown', (key) => {
-    if (key === 'leftArrow') {
+  socket.on('keyDown', ({ keyCode, sequenceNumber }) => {
+    players[socket.id].sequenceNumber = sequenceNumber
+    if (keyCode === 'leftArrow') {
       players[socket.id].x -= 3
       players[socket.id].currentDirection = 180
-    } else if (key === 'rightArrow') {
+    } else if (keyCode === 'rightArrow') {
       players[socket.id].x += 3
       players[socket.id].currentDirection = 0
-    } else if (key === 'upArrow') {
+    } else if (keyCode === 'upArrow') {
       players[socket.id].y -= 3
       players[socket.id].currentDirection = -90
-    } else if (key === 'downArrow') {
+    } else if (keyCode === 'downArrow') {
       players[socket.id].y += 3
       players[socket.id].currentDirection = 90
     }
