@@ -9,43 +9,89 @@ const socket = require('socket.io')
 
 const io = socket(server, { pingInterval: 2000, pingTimeout: 5000 })
 
-const players = {}
+const serverPlayers = {}
 
 const playerInitData = {
-  1: { x: 100, y: 100 },
-  2: { x: 200, y: 200 },
+  1: { x: 100, y: 100, direction: 180 },
+  2: { x: 200, y: 200, direction: 90 },
 }
+
+let projectileId = 0
+const serverProjectiles = {}
 
 io.on('connection', (socket) => {
   console.log('a user connected')
-  players[socket.id] = {
-    x: 500 * Math.random(),
-    y: 500 * Math.random(),
+  serverPlayers[socket.id] = {
+    x: playerInitData[1].x,
+    y: playerInitData[1].y,
+    direction: playerInitData[1].direction,
   }
-  io.emit('updatePlayers', players)
+  io.emit('updatePlayers', serverPlayers)
 
   socket.on('disconnect', (reason) => {
-    delete players[socket.id]
-    io.emit('updatePlayers', players)
+    delete serverPlayers[socket.id]
+    io.emit('updatePlayers', serverPlayers)
   })
 
   socket.on('keyDown', (key) => {
     if (key === 'leftArrow') {
-      players[socket.id].x -= 3
-      players[socket.id].currentDirection = 180
+      serverPlayers[socket.id].x -= 3
+      serverPlayers[socket.id].direction = 180
     } else if (key === 'rightArrow') {
-      players[socket.id].x += 3
-      players[socket.id].currentDirection = 0
+      serverPlayers[socket.id].x += 3
+      serverPlayers[socket.id].direction = 0
     } else if (key === 'upArrow') {
-      players[socket.id].y -= 3
-      players[socket.id].currentDirection = -90
+      serverPlayers[socket.id].y -= 3
+      serverPlayers[socket.id].direction = -90
     } else if (key === 'downArrow') {
-      players[socket.id].y += 3
-      players[socket.id].currentDirection = 90
+      serverPlayers[socket.id].y += 3
+      serverPlayers[socket.id].direction = 90
     }
+  })
+
+  socket.on('shoot', ({ x, y, direction }) => {
+    projectileId++
+
+    console.log(serverProjectiles, 'pre')
+
+    let velocity
+    switch (direction) {
+      case 180:
+        velocity = { x: -15, y: 0 }
+        break
+      case -90:
+        velocity = { x: 0, y: -15 }
+        break
+      case 0:
+        velocity = { x: 15, y: 0 }
+        break
+      case 90:
+        velocity = { x: 0, y: 15 }
+        break
+      default:
+        break
+    }
+
+    serverProjectiles[projectileId] = {
+      x,
+      y,
+      velocity,
+      playerId: socket.id,
+    }
+
+    console.log(serverProjectiles)
   })
 })
 
 setInterval(() => {
-  io.emit('updatePlayers', players)
+  //update projectile positions
+  for (const id in serverProjectiles) {
+    const serverProjectile = serverProjectiles[id]
+
+    serverProjectile.x += serverProjectile.velocity.x
+    serverProjectile.y += serverProjectile.velocity.y
+  }
+  debugger
+  io.emit('updateProjectiles', serverProjectiles)
+  io.emit('updatePlayers', serverPlayers)
 }, 15)

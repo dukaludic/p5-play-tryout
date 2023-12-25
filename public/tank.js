@@ -1,11 +1,13 @@
-/**
- * @type {import('p5')}
- */
+const TANK_DIMENSIONS = {
+  w: 20,
+  h: 30,
+}
+
 class Tank extends Collidable {
-  constructor(x, y, w = 20, h = 30) {
+  constructor(x, y, w = 20, h = 30, direction) {
     super(x, y, w, h)
 
-    this.currentDirection = -90
+    this.currentDirection = direction
 
     this.keyPressed = {
       upArrow: {

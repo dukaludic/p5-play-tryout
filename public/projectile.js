@@ -1,23 +1,17 @@
-class Projectile {
-  constructor(x, y, direction) {
-    console.log(x, y, direction)
-    // return
-    this.x = x
-    this.y = y
-    this.direction = { ...direction }
+class Projectile extends Collidable {
+  constructor(x, y, w, h, direction) {
+    super(x, y, w, h)
+    this.speed = 15
 
-    this.speed = 5
+    // this.velocity = {
+    //   x: 0,
+    //   y: 0,
+    // }
+
+    // debugger
   }
   show = function () {
-    const x = this.x
-    const y = this.y
-    // console.log(x, y, this.direction)
-
-    ellipse(
-      25 + (this.x += this.direction * this.speed),
-      25 + (this.y += this.direction * this.speed),
-      10,
-      10,
-    )
+    fill(255, 0, 0)
+    rect(this.x, this.y, 5, 5)
   }
 }

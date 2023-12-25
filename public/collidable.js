@@ -47,6 +47,7 @@ class Collidable {
 
   collidesWithEdgeOfCanvas() {
     if (this.x - this.w < 0) {
+      console.log('collides to the left')
       this.possibleMovingDirections.left = false
     } else {
       this.possibleMovingDirections.left = true
