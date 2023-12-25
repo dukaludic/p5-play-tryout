@@ -22,23 +22,24 @@ class Tank extends Collidable {
       },
     }
 
+    this.speed = 30
+
     setInterval(() => {
-      // console.log(this.keyPressed.upArrow.pressed)
       if (this.keyPressed.leftArrow.pressed) {
-        players[socket.id].x -= 3
-        players[socket.id].currentDirection = 180
+        // players[socket.id].x -= this.speed
+        // players[socket.id].currentDirection = 180
         socket.emit('keyDown', 'leftArrow')
       } else if (this.keyPressed.rightArrow.pressed) {
-        players[socket.id].x += 3
-        players[socket.id].currentDirection = 0
+        // players[socket.id].x += this.speed
+        // players[socket.id].currentDirection = 0
         socket.emit('keyDown', 'rightArrow')
       } else if (this.keyPressed.upArrow.pressed) {
-        players[socket.id].y -= 3
-        players[socket.id].currentDirection = -90
+        // players[socket.id].y -= this.speed
+        // players[socket.id].currentDirection = -90
         socket.emit('keyDown', 'upArrow')
       } else if (this.keyPressed.downArrow.pressed) {
-        players[socket.id].y += 3
-        players[socket.id].currentDirection = 90
+        // players[socket.id].y += this.speed
+        // players[socket.id].currentDirection = 90
         socket.emit('keyDown', 'downArrow')
       }
     }, 15)

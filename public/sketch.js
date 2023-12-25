@@ -9,6 +9,7 @@ const CANVAS_DIMENSIONS = {
 const players = {}
 
 let id
+const projectiles = []
 
 function setup() {
   angleMode(DEGREES)
@@ -34,8 +35,6 @@ function setup() {
         delete players[id]
       }
     }
-
-    // console.log(players)
   })
 }
 
@@ -48,11 +47,7 @@ function draw() {
     keyIsDown(DOWN_ARROW)
   ) {
     players[socket.id].move()
-    // console.log(players, 'players')
   }
-
-  // players[Object.keys(players)[0]]?.collidesWithEdgeOfCanvas()
-  // console.log(players[Object.keys(players)[0]]?.possibleMovingDirections)
 
   if (players[Object.keys(players)[0]] && players[Object.keys(players)[1]]) {
     players[Object.keys(players)[0]].collidesWith(
@@ -64,6 +59,11 @@ function draw() {
     )
   }
 
+  for (projectile of projectiles) {
+    console.log(projectile)
+    projectile.show()
+  }
+
   for (const key in players) {
     const player = players[key]
     player.show()
@@ -72,7 +72,7 @@ function draw() {
 
 function keyPressed() {
   if ((keyCode = 32)) {
-    console.log(players)
+    projectiles.push(new Projectile(100, 200, { x: 1, y: -1 }))
   }
 }
 
