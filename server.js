@@ -1,4 +1,10 @@
 const express = require('express')
+const cors = require('cors')
+
+const CANVAS_DIMENSIONS = {
+  width: 600,
+  height: 400,
+}
 
 const app = express()
 const server = app.listen(3000)
@@ -7,7 +13,10 @@ app.use(express.static('public'))
 
 const socket = require('socket.io')
 
-const io = socket(server, { pingInterval: 2000, pingTimeout: 5000 })
+const io = socket(server, {
+  pingInterval: 2000,
+  pingTimeout: 5000,
+})
 
 const serverPlayers = {}
 
@@ -52,8 +61,6 @@ io.on('connection', (socket) => {
   socket.on('shoot', ({ x, y, direction }) => {
     projectileId++
 
-    console.log(serverProjectiles, 'pre')
-
     let velocity
     switch (direction) {
       case 180:
@@ -78,20 +85,47 @@ io.on('connection', (socket) => {
       velocity,
       playerId: socket.id,
     }
-
-    console.log(serverProjectiles)
   })
 })
 
 setInterval(() => {
   //update projectile positions
-  for (const id in serverProjectiles) {
-    const serverProjectile = serverProjectiles[id]
+  for (const serverProjectileId in serverProjectiles) {
+    const serverProjectile = serverProjectiles[serverProjectileId]
 
     serverProjectile.x += serverProjectile.velocity.x
     serverProjectile.y += serverProjectile.velocity.y
+
+    if (
+      serverProjectile.x < 0 ||
+      serverProjectile.x > CANVAS_DIMENSIONS.width ||
+      serverProjectile.y < 0 ||
+      serverProjectile.y > CANVAS_DIMENSIONS.height
+    ) {
+      delete serverProjectiles[serverProjectileId]
+      continue
+    }
+
+    for (const serverPlayerId in serverPlayers) {
+      const serverPlayer = serverPlayers[serverPlayerId]
+
+      const DISTANCE = Math.hypot(
+        serverProjectiles[serverProjectileId].x - serverPlayer.x,
+        serverProjectiles[serverProjectileId].y - serverPlayer.y,
+      )
+
+      const TMP_ARBITRARY_DISTANCE = 10
+      if (DISTANCE < TMP_ARBITRARY_DISTANCE) {
+        if (serverProjectiles[serverProjectileId].playerId !== serverPlayerId) {
+          delete serverProjectiles[serverProjectileId]
+          // delete serverPlayers[id]
+          console.log('HIT')
+          break
+        }
+      }
+    }
   }
-  debugger
+
   io.emit('updateProjectiles', serverProjectiles)
   io.emit('updatePlayers', serverPlayers)
 }, 15)

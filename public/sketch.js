@@ -13,12 +13,15 @@ function setup() {
   background(51)
   createCanvas(CANVAS_DIMENSIONS.width, CANVAS_DIMENSIONS.height)
 
-  socket = io.connect('http://localhost:3000')
+  socket = io.connect('http://localhost:3000', {
+    withCredentials: true,
+    // ... other options
+  })
 
   socket.on('updateProjectiles', (serverProjectiles) => {
     for (const id in serverProjectiles) {
       const serverProjectile = serverProjectiles[id]
-      // debugger
+
       if (!clientProjectiles[id]) {
         clientProjectiles[id] = new Projectile(
           serverProjectile.x,
@@ -30,9 +33,13 @@ function setup() {
       } else {
         clientProjectiles[id].x += serverProjectiles[id].velocity.x
         clientProjectiles[id].y += serverProjectiles[id].velocity.y
+      }
 
-        // debugger
-        // console.log(clientProjectiles[id])
+      for (const clientProjectileId in clientProjectiles) {
+        if (!serverProjectiles[clientProjectileId]) {
+          delete clientProjectiles[clientProjectileId]
+        }
+        console.log(clientProjectiles)
       }
     }
   })
@@ -130,6 +137,7 @@ function keyPressed(key) {
     console.log({ x: mouseX, y: mouseY })
     console.log({ playerX: thisPlayer.x, playerY: thisPlayer.y })
     console.log(clientPlayers)
+    console.log(clientProjectiles)
   }
 }
 
