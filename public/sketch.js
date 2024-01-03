@@ -27,7 +27,6 @@ function setup() {
     for (const id in serverProjectiles) {
       const serverProjectile = serverProjectiles[id]
 
-      debugger
 
       if (!clientProjectiles[id]) {
         clientProjectiles[id] = new Projectile(

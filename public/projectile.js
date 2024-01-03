@@ -8,3 +8,8 @@ class Projectile extends Collidable {
     rect(this.x, this.y, 5, 5)
   }
 }
+
+// Entity component system. JS ima male biblioteke
+// Ima ensy
+// Benchmark JSON vs sending just string through websockets or any kind of networks
+// benchmark {x:1, y:2} vs 1;2 string
