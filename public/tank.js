@@ -52,18 +52,11 @@ class Tank extends Collidable {
     translate(this.x, this.y)
     rotate(this.currentDirection)
 
-    // Tank body
-    rectMode(CENTER)
-    fill(100)
-    rect(0, 0, this.h, this.w)
+    // Set image mode to CENTER
+    imageMode(CENTER)
 
-    // Tank turret
-    fill(150)
-    rect(15, 0, 10, 5)
-
-    //TEMP
-    fill(255, 0, 0)
-    rect(0, 0, 5, 5)
+    // Draw the tank image
+    image(tankImage, 0, 0, 60, 30)
 
     pop()
   }

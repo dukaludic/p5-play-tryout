@@ -1,12 +1,18 @@
-let socket
-
 const CANVAS_DIMENSIONS = {
-  width: 600,
-  height: 400,
+  width: 1200,
+  height: 600,
 }
 
+let backgroundImage
+let tankImage
+let socket
 const clientPlayers = {}
 const clientProjectiles = []
+
+function preload() {
+  backgroundImage = loadImage('./images/map.png')
+  tankImage = loadImage('./images/tank.png')
+}
 
 function setup() {
   angleMode(DEGREES)
@@ -14,8 +20,7 @@ function setup() {
   createCanvas(CANVAS_DIMENSIONS.width, CANVAS_DIMENSIONS.height)
 
   socket = io.connect('http://localhost:3000', {
-    withCredentials: true,
-    // ... other options
+    withCredentials: false,
   })
 
   socket.on('updateProjectiles', (serverProjectiles) => {
@@ -73,6 +78,9 @@ function setup() {
 
 function draw() {
   background(51)
+  image(backgroundImage, 0, 0, 1200, 600)
+  // image(tankImage, 100, 100, 60, 30)
+
   if (
     keyIsDown(LEFT_ARROW) ||
     keyIsDown(RIGHT_ARROW) ||

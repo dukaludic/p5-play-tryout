@@ -1,21 +1,21 @@
 const express = require('express')
-const cors = require('cors')
+const { Server } = require('socket.io')
 
 const CANVAS_DIMENSIONS = {
-  width: 600,
-  height: 400,
+  width: 1200,
+  height: 600,
 }
 
 const app = express()
-const server = app.listen(3000)
+const srv = app.listen(3000)
 
 app.use(express.static('public'))
 
-const socket = require('socket.io')
-
-const io = socket(server, {
-  pingInterval: 2000,
-  pingTimeout: 5000,
+const io = new Server(srv, {
+  cors: {
+    origin: '*',
+    credentials: false,
+  },
 })
 
 const serverPlayers = {}
