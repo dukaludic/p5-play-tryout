@@ -89,7 +89,6 @@ io.on('connection', (socket) => {
 })
 
 setInterval(() => {
-  //update projectile positions
   for (const serverProjectileId in serverProjectiles) {
     const serverProjectile = serverProjectiles[serverProjectileId]
 
@@ -109,6 +108,7 @@ setInterval(() => {
     for (const serverPlayerId in serverPlayers) {
       const serverPlayer = serverPlayers[serverPlayerId]
 
+      // This needs to be rectangular collision, not radial
       const DISTANCE = Math.hypot(
         serverProjectiles[serverProjectileId].x - serverPlayer.x,
         serverProjectiles[serverProjectileId].y - serverPlayer.y,
@@ -118,8 +118,6 @@ setInterval(() => {
       if (DISTANCE < TMP_ARBITRARY_DISTANCE) {
         if (serverProjectiles[serverProjectileId].playerId !== serverPlayerId) {
           delete serverProjectiles[serverProjectileId]
-          // delete serverPlayers[id]
-          console.log('HIT')
           break
         }
       }

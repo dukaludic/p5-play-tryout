@@ -2,13 +2,6 @@ class Projectile extends Collidable {
   constructor(x, y, w, h, direction) {
     super(x, y, w, h)
     this.speed = 15
-
-    // this.velocity = {
-    //   x: 0,
-    //   y: 0,
-    // }
-
-    // debugger
   }
   show = function () {
     fill(255, 0, 0)

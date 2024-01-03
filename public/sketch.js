@@ -27,13 +27,15 @@ function setup() {
     for (const id in serverProjectiles) {
       const serverProjectile = serverProjectiles[id]
 
+      debugger
+
       if (!clientProjectiles[id]) {
         clientProjectiles[id] = new Projectile(
           serverProjectile.x,
           serverProjectile.y,
           undefined,
           undefined,
-          serverProjectile.direction,
+          // serverProjectile.direction,
         )
       } else {
         clientProjectiles[id].x += serverProjectiles[id].velocity.x
@@ -77,63 +79,25 @@ function setup() {
 }
 
 function draw() {
-  background(51)
-  image(backgroundImage, 0, 0, 1200, 600)
-  // image(tankImage, 100, 100, 60, 30)
+  image(
+    backgroundImage,
+    0,
+    0,
+    CANVAS_DIMENSIONS.width,
+    CANVAS_DIMENSIONS.height,
+  )
 
-  if (
-    keyIsDown(LEFT_ARROW) ||
-    keyIsDown(RIGHT_ARROW) ||
-    keyIsDown(UP_ARROW) ||
-    keyIsDown(DOWN_ARROW)
-  ) {
-    clientPlayers[socket.id].move()
-  }
-
-  if (
-    clientPlayers[Object.keys(clientPlayers)[0]] &&
-    clientPlayers[Object.keys(clientPlayers)[1]]
-  ) {
-    clientPlayers[Object.keys(clientPlayers)[0]].collidesWith(
-      clientPlayers[Object.keys(clientPlayers)[1]],
-    )
-
-    clientPlayers[Object.keys(clientPlayers)[1]].collidesWith(
-      clientPlayers[Object.keys(clientPlayers)[0]],
-    )
-  }
-
-  for (let i = clientProjectiles.length; i >= 0; i--) {
-    if (clientProjectiles[i]) {
-      clientProjectiles[i].show()
-    }
-  }
-
-  for (const key in clientPlayers) {
-    const player = clientPlayers[key]
-
-    player.show()
-  }
-
-  for (const key in clientPlayers) {
-    const player = clientPlayers[key]
-    player.collidesWithEdgeOfCanvas()
-  }
+  moveCurrentPlayer(socket.id)
+  handlePlayersCollision(clientPlayers)
+  handleShowProjectiles(clientProjectiles)
+  handleShowPlayers(clientPlayers)
+  handleCanvasCollision(clientPlayers)
 }
 
 function keyPressed(key) {
   const thisPlayer = clientPlayers[socket.id]
 
   if (key.keyCode == 32) {
-    // clientProjectiles.push(
-    //   new Projectile(
-    //     thisPlayer.x,
-    //     thisPlayer.y,
-    //     undefined,
-    //     undefined,
-    //     thisPlayer.currentDirection,
-    //   ),
-    // )
     socket.emit('shoot', {
       x: thisPlayer.x,
       y: thisPlayer.y,
@@ -146,6 +110,50 @@ function keyPressed(key) {
     console.log({ playerX: thisPlayer.x, playerY: thisPlayer.y })
     console.log(clientPlayers)
     console.log(clientProjectiles)
+  }
+}
+
+function moveCurrentPlayer(id) {
+  if (
+    keyIsDown(LEFT_ARROW) ||
+    keyIsDown(RIGHT_ARROW) ||
+    keyIsDown(UP_ARROW) ||
+    keyIsDown(DOWN_ARROW)
+  ) {
+    clientPlayers[socket.id].move()
+  }
+}
+
+function handlePlayersCollision(clientPlayers) {
+  const player1 = clientPlayers[Object.keys(clientPlayers)[0]]
+  const player2 = clientPlayers[Object.keys(clientPlayers)[1]]
+  if (player1 && player2) {
+    player1.collidesWith(player2)
+
+    player2.collidesWith(player1)
+  }
+}
+
+function handleShowProjectiles(clientProjectiles) {
+  for (let i = clientProjectiles.length; i >= 0; i--) {
+    if (clientProjectiles[i]) {
+      clientProjectiles[i].show()
+    }
+  }
+}
+
+function handleShowPlayers(clientPlayers) {
+  for (const key in clientPlayers) {
+    const player = clientPlayers[key]
+
+    player.show()
+  }
+}
+
+function handleCanvasCollision(clientPlayers) {
+  for (const key in clientPlayers) {
+    const player = clientPlayers[key]
+    player.collidesWithEdgeOfCanvas()
   }
 }
 
