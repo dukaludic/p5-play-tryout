@@ -9,6 +9,50 @@ const CANVAS_DIMENSIONS = {
 const app = express()
 const srv = app.listen(3000)
 
+app.get('/play', (req, res) => {
+  const html = `
+    <head>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.js"></script>
+    <script src="../node_modules/@types/p5/index.d.ts"></script>
+    <script src="collidable.js"></script>
+    <script src="tank.js"></script>
+    <script src="projectile.js"></script>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="sketch.js"></script>
+    </head>
+  `
+  console.log('plaaaay')
+  res.send(html)
+})
+
+app.get('/multiplayer', (req, res) => {
+  const html = `
+    <div class="menu-container">
+      <button hx-get="/host" disabled="true" class="btn">Host</button>
+      <button hx-get="/join" class="btn">Join</button>
+      <button hx-get="/" class="btn">Back</button>
+    </div>
+  `
+  res.send(html)
+})
+
+app.get('/host', (req, res) => {
+  const html = `
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.js"></script>
+    <script src="../node_modules/@types/p5/index.d.ts"></script>
+    <script src="collidable.js"></script>
+    <script src="tank.js"></script>
+    <script src="projectile.js"></script>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="sketch.js"></script>
+  </head>
+  `
+  res.send(html)
+})
+
 app.use(express.static('public'))
 
 const io = new Server(srv, {

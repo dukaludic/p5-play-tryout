@@ -1,15 +1,29 @@
 <html>
   <head>
-    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.js"></script>
-    <script src="../node_modules/@types/p5/index.d.ts"></script>
-    <script src="collidable.js"></script>
-    <script src="tank.js"></script>
-    <script src="projectile.js"></script>
-
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="sketch.js"></script>
+    <script
+      src="https://unpkg.com/htmx.org@1.9.10"
+      integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/head-support.js"></script>
+    <link rel="stylesheet" href="index.css" />
   </head>
-  <body>
-    <main></main>
+  <body hx-ext="head-support">
+    <main>
+      <div id="parent-div" hx-swap="replace" class="menu-container">
+        <button hx-get="/singleplayer" disabled="true" class="btn">
+          Singleplayer
+        </button>
+        <button
+          hx-trigger="click"
+          hx-target="#parent-div"
+          hx-swap="outerHTML"
+          hx-get="/multiplayer"
+          class="btn"
+        >
+          Multiplayer
+        </button>
+      </div>
+    </main>
   </body>
 </html>

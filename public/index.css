@@ -1,0 +1,36 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+
+main {
+    background-color: black;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.menu-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn {
+    display: block;
+    background-color: none;
+    color: white;
+    border: none;
+    background: none;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.btn:hover {
+    color: #756868
+}
